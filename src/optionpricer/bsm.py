@@ -1,10 +1,11 @@
 """Black-Scholes-Merton pricing for European options."""
 
 from __future__ import annotations
-import scipy.stats
-import math
-from scipy.stats import norm
 
+import math
+
+def norm_cdf(x: float) -> float:
+    return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
 
 def _validate(S: float, K: float, T: float, sigma: float) -> None:
     if S <= 0:
@@ -63,7 +64,7 @@ def bsm_price(
     d1, d2 = d1_d2(S, K, T, r, sigma, q)
 
     if option_type == "call":
-        return S * disc_q * norm.cdf(d1) - K * disc_r * norm.cdf(d2)
-    return K * disc_r * norm.cdf(-d2) - S * disc_q * norm.cdf(-d1)
+        return S * disc_q * norm_cdf(d1) - K * disc_r * norm_cdf(d2)
+    return K * disc_r * norm_cdf(-d2) - S * disc_q * norm_cdf(-d1)
 
 
